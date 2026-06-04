@@ -42,7 +42,8 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('bp_token');
     localStorage.removeItem('bp_user');
     setUser(null);
-  };
+    window.location.href = '/';
+};
 
   const isManager = user?.role === 'manager';
   const isEmploye = user?.role === 'employe' || user?.role === 'manager';
