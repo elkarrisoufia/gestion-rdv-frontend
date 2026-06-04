@@ -13,10 +13,23 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem('bp_token');
     const saved = localStorage.getItem('bp_user');
     if (token && saved) {
-      try { setUser(JSON.parse(saved)); } catch {}
+      try { 
+        // Vérifier si le token est encore valide
+        authAPI.me().then(res => {
+          setUser(res.data);
+        }).catch(() => {
+          // Token invalide → déconnexion
+          localStorage.removeItem('bp_token');
+          localStorage.removeItem('bp_user');
+          setUser(null);
+        }).finally(() => setInit(false));
+      } catch {
+        setInit(false);
+      }
+    } else {
+      setInit(false);
     }
-    setInit(false);
-  }, []);
+}, []);
 
   const login = async (email, password) => {
     setLoading(true);
