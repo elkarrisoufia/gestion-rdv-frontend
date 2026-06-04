@@ -13,19 +13,14 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem('bp_token');
     const saved = localStorage.getItem('bp_user');
     if (token && saved) {
-      try { 
-        // Vérifier si le token est encore valide
-        authAPI.me().then(res => {
-          setUser(res.data);
-        }).catch(() => {
-          // Token invalide → déconnexion
-          localStorage.removeItem('bp_token');
-          localStorage.removeItem('bp_user');
-          setUser(null);
-        }).finally(() => setInit(false));
-      } catch {
-        setInit(false);
-      }
+      authAPI.me().then(res => {
+        setUser(res.data);
+        localStorage.setItem('bp_user', JSON.stringify(res.data));
+      }).catch(() => {
+        localStorage.removeItem('bp_token');
+        localStorage.removeItem('bp_user');
+        setUser(null);
+      }).finally(() => setInit(false));
     } else {
       setInit(false);
     }
@@ -55,7 +50,8 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('bp_token');
     localStorage.removeItem('bp_user');
     setUser(null);
-    window.location.href = '/';
+    setError('');
+    window.location.replace('/login');
 };
 
   const isManager = user?.role === 'manager';
