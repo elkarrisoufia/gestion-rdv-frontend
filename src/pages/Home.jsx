@@ -36,12 +36,22 @@ export default function Home() {
             Des solutions bancaires adaptées à chaque étape de votre vie.
           </p>
           <div className="hero-actions">
-            <Link to="/login" className="btn btn-primary btn-lg">
-              Accéder à mon espace
-            </Link>
-            <Link to="/nos-services" className="btn btn-secondary btn-lg">
-              Nos services
-            </Link>
+  <button 
+    className="btn btn-primary btn-lg"
+    onClick={() => {
+      const user = JSON.parse(localStorage.getItem('bp_user') || 'null');
+      if (user) {
+        window.location.href = user.role === 'client' ? '/espace-client' : '/dashboard';
+      } else {
+        window.location.href = '/login';
+      }
+    }}
+  >
+    Accéder à mon espace
+  </button>
+  <Link to="/nos-services" className="btn btn-secondary btn-lg">
+    Nos services
+  </Link>
           </div>
           <div className="hero-stats">
             <div className="hstat"><strong>50+</strong><span>Ans d'expérience</span></div>

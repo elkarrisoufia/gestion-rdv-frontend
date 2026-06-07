@@ -45,12 +45,11 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = async () => {
+const logout = async () => {
     try { await authAPI.logout(); } catch {}
     localStorage.removeItem('bp_token');
     localStorage.removeItem('bp_user');
     setUser(null);
-    setError('');
     window.location.replace('/login');
 };
 
