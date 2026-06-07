@@ -16,14 +16,11 @@ export default function Login() {
   const { login, loading, error, setError } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
-    const ok = await login(email, password);
-    if (ok) {
-      const user = JSON.parse(localStorage.getItem('bp_user'));
-      navigate(user.role === 'client' ? '/espace-client' : '/dashboard');
-    }
-  };
+    await login(email, password);
+    // ✅ Plus de navigate ici — AuthContext gère la redirection
+};
 
   const fillDemo = (demoEmail) => {
     setEmail(demoEmail);
