@@ -37,13 +37,12 @@ function AppLayout({ children }) {
 }
 
 export default function App() {
-  const { user } = useAuth();
   return (
     <Routes>
       {/* Public */}
       <Route path="/" element={<Home />} />
-      <Route path="/login" element={user ? <Navigate to={user.role === 'client' ? '/espace-client' : '/dashboard'} /> : <Login />} />
-      <Route path="/register" element={user ? <Navigate to="/espace-client" /> : <Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/nos-services" element={<PublicPages page="services" />} />
       <Route path="/horaires" element={<PublicPages page="horaires" />} />
       <Route path="/contact" element={<PublicPages page="contact" />} />
@@ -59,7 +58,7 @@ export default function App() {
       <Route path="/statistiques" element={<PrivateRoute allowedRoles={['manager']}><AppLayout><Stats /></AppLayout></PrivateRoute>} />
       <Route path="/employes"     element={<PrivateRoute allowedRoles={['manager']}><AppLayout><Employes /></AppLayout></PrivateRoute>} />
 
-      {/* Client — seulement espace client, PAS de page mes-rdv séparée */}
+      {/* Client */}
       <Route path="/espace-client" element={<PrivateRoute allowedRoles={['client']}><AppLayout><ClientSpace /></AppLayout></PrivateRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />

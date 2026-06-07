@@ -12,18 +12,15 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('bp_token');
     if (!token) {
-      // ✅ Pas de token → pas connecté, point final
       setInit(false);
       return;
     }
-    // ✅ Token présent → vérifier s'il est encore valide
     authAPI.me()
       .then(res => {
         setUser(res.data);
         localStorage.setItem('bp_user', JSON.stringify(res.data));
       })
       .catch(() => {
-        // ✅ Token invalide → tout nettoyer
         localStorage.removeItem('bp_token');
         localStorage.removeItem('bp_user');
         setUser(null);
@@ -41,6 +38,12 @@ export function AuthProvider({ children }) {
       localStorage.setItem('bp_user', JSON.stringify(userData));
       setUser(userData);
       setLoading(false);
+      // Redirection selon le rôle
+      setTimeout(() => {
+        window.location.replace(
+          userData.role === 'client' ? '/espace-client' : '/dashboard'
+        );
+      }, 100);
       return true;
     } catch (err) {
       const msg = err.response?.data?.message || 'Erreur de connexion. Vérifiez vos identifiants.';
@@ -50,14 +53,15 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ✅ Logout définitif — nettoie tout et redirige vers login
   const logout = async () => {
     try { await authAPI.logout(); } catch {}
     localStorage.removeItem('bp_token');
     localStorage.removeItem('bp_user');
     setUser(null);
     setError('');
-    window.location.replace('/login');
+    setTimeout(() => {
+      window.location.replace('/login');
+    }, 100);
   };
 
   const isManager = user?.role === 'manager';
