@@ -11,20 +11,25 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('bp_token');
-    const saved = localStorage.getItem('bp_user');
-    if (token && saved) {
-      authAPI.me().then(res => {
+    if (!token) {
+      // ✅ Pas de token → pas connecté, point final
+      setInit(false);
+      return;
+    }
+    // ✅ Token présent → vérifier s'il est encore valide
+    authAPI.me()
+      .then(res => {
         setUser(res.data);
         localStorage.setItem('bp_user', JSON.stringify(res.data));
-      }).catch(() => {
+      })
+      .catch(() => {
+        // ✅ Token invalide → tout nettoyer
         localStorage.removeItem('bp_token');
         localStorage.removeItem('bp_user');
         setUser(null);
-      }).finally(() => setInit(false));
-    } else {
-      setInit(false);
-    }
-}, []);
+      })
+      .finally(() => setInit(false));
+  }, []);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -45,13 +50,15 @@ export function AuthProvider({ children }) {
     }
   };
 
-const logout = async () => {
+  // ✅ Logout définitif — nettoie tout et redirige vers login
+  const logout = async () => {
     try { await authAPI.logout(); } catch {}
     localStorage.removeItem('bp_token');
     localStorage.removeItem('bp_user');
     setUser(null);
+    setError('');
     window.location.replace('/login');
-};
+  };
 
   const isManager = user?.role === 'manager';
   const isEmploye = user?.role === 'employe' || user?.role === 'manager';
