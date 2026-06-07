@@ -8,8 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
   const [init, setInit]       = useState(true);
-
-  useEffect(() => {
+useEffect(() => {
     const token = localStorage.getItem('bp_token');
     if (!token) {
       setInit(false);
@@ -18,15 +17,13 @@ export function AuthProvider({ children }) {
     authAPI.me()
       .then(res => {
         setUser(res.data);
-        localStorage.setItem('bp_user', JSON.stringify(res.data));
       })
       .catch(() => {
-        localStorage.removeItem('bp_token');
-        localStorage.removeItem('bp_user');
+        localStorage.clear();
         setUser(null);
       })
       .finally(() => setInit(false));
-  }, []);
+}, []);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -55,13 +52,13 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try { await authAPI.logout(); } catch {}
-    localStorage.clear(); // ✅ Vide TOUT le localStorage
-    sessionStorage.clear(); // ✅ Vide aussi le sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
     setUser(null);
     setError('');
-    setTimeout(() => {
-      window.location.href = '/login?t=' + Date.now(); // ✅ Force rechargement avec timestamp
-    }, 100);
+    window.location.href = '/login';
+};
+    
 };
 
   const isManager = user?.role === 'manager';

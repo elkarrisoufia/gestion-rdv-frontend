@@ -41,7 +41,9 @@ export default function App() {
     <Routes>
       {/* Public */}
       <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={
+  user ? <Navigate to={user.role === 'client' ? '/espace-client' : '/dashboard'} replace /> : <Login />
+} />
       <Route path="/register" element={<Register />} />
       <Route path="/nos-services" element={<PublicPages page="services" />} />
       <Route path="/horaires" element={<PublicPages page="horaires" />} />
