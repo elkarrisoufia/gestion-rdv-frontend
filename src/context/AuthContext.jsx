@@ -55,14 +55,14 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try { await authAPI.logout(); } catch {}
-    localStorage.removeItem('bp_token');
-    localStorage.removeItem('bp_user');
+    localStorage.clear(); // ✅ Vide TOUT le localStorage
+    sessionStorage.clear(); // ✅ Vide aussi le sessionStorage
     setUser(null);
     setError('');
     setTimeout(() => {
-      window.location.replace('/login');
+      window.location.href = '/login?t=' + Date.now(); // ✅ Force rechargement avec timestamp
     }, 100);
-  };
+};
 
   const isManager = user?.role === 'manager';
   const isEmploye = user?.role === 'employe' || user?.role === 'manager';
