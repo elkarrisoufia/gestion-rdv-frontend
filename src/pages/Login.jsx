@@ -16,11 +16,14 @@ export default function Login() {
   const { login, loading, error, setError } = useAuth();
   const navigate = useNavigate();
 
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password);
-    // ✅ Plus de navigate ici — AuthContext gère la redirection
-};
+    const userData = await login(email, password);
+    if (userData) {
+      // ✅ useNavigate — pas de rechargement de page
+      navigate(userData.role === 'client' ? '/espace-client' : '/dashboard', { replace: true });
+    }
+  };
 
   const fillDemo = (demoEmail) => {
     setEmail(demoEmail);

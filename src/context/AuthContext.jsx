@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authAPI } from '../services/api';
 
 const AuthContext = createContext(null);
@@ -8,9 +8,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
   const [init, setInit]       = useState(true);
-  const [loggingOut, setLoggingOut] = useState(false); // ✅ Nouveau état
 
-useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem('bp_token');
     if (!token) {
       setInit(false);
@@ -23,7 +22,8 @@ useEffect(() => {
         setUser(null);
       })
       .finally(() => setInit(false));
-}, []);
+  }, []);
+
   const login = async (email, password) => {
     setLoading(true);
     setError('');
@@ -34,30 +34,24 @@ useEffect(() => {
       localStorage.setItem('bp_user', JSON.stringify(userData));
       setUser(userData);
       setLoading(false);
-      setTimeout(() => {
-        window.location.replace(
-          userData.role === 'client' ? '/espace-client' : '/dashboard'
-        );
-      }, 100);
-      return true;
+      return userData; // ✅ Retourne userData pour que Login.jsx gère la navigation
     } catch (err) {
       const msg = err.response?.data?.message || 'Erreur de connexion. Vérifiez vos identifiants.';
       setError(msg);
       setLoading(false);
-      return false;
+      return null;
     }
   };
 
-const logout = async () => {
-    setLoggingOut(true);
+  const logout = async () => {
     try { await authAPI.logout(); } catch {}
     localStorage.clear();
     sessionStorage.clear();
     setUser(null);
     setError('');
-    setLoggingOut(false);
-    setInit(false); // ✅ Ne pas relancer le chargement
-};
+    // ✅ Pas de window.location — Login.jsx et App.jsx gèrent la navigation
+  };
+
   const isManager = user?.role === 'manager';
   const isEmploye = user?.role === 'employe' || user?.role === 'manager';
   const isClient  = user?.role === 'client';
@@ -72,7 +66,7 @@ const logout = async () => {
   );
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, error, setError, isManager, isEmploye, isClient, loggingOut }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, error, setError, isManager, isEmploye, isClient }}>
       {children}
     </AuthContext.Provider>
   );

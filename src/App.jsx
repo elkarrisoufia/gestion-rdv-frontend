@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
@@ -17,9 +17,7 @@ import './styles/global.css';
 import './App.css';
 
 function PrivateRoute({ children, allowedRoles }) {
-  const { user, loggingOut } = useAuth();
-  // ✅ Si en train de se déconnecter → ne pas rediriger
-  if (loggingOut) return null;
+  const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return user.role === 'client'
@@ -39,9 +37,7 @@ function AppLayout({ children }) {
 }
 
 function LoginRoute() {
-  const { user, loggingOut } = useAuth();
-  // ✅ Si en train de se déconnecter → afficher login directement
-  if (loggingOut) return <Login />;
+  const { user } = useAuth();
   if (user) {
     return <Navigate to={user.role === 'client' ? '/espace-client' : '/dashboard'} replace />;
   }
