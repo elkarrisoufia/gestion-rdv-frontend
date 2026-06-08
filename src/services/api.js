@@ -20,9 +20,9 @@ api.interceptors.response.use(
   res => res,
   err => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('bp_token');
-      localStorage.removeItem('bp_user');
-      window.location.href = '/login';
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.replace('/login');
     }
     return Promise.reject(err);
   }

@@ -9,12 +9,13 @@ export function AuthProvider({ children }) {
   const [error, setError]     = useState('');
   const [init, setInit]       = useState(true);
 
-  useEffect(() => {
+useEffect(() => {
     const token = localStorage.getItem('bp_token');
     if (!token) {
       setInit(false);
       return;
     }
+    // ✅ Invalider le token côté backend avant tout
     authAPI.me()
       .then(res => { setUser(res.data); })
       .catch(() => {
@@ -22,7 +23,7 @@ export function AuthProvider({ children }) {
         setUser(null);
       })
       .finally(() => setInit(false));
-  }, []);
+}, []);
 
   const login = async (email, password) => {
     setLoading(true);
