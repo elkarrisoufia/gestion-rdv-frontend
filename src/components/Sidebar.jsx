@@ -6,7 +6,10 @@ export default function Sidebar() {
   const { user, logout, isManager, isClient } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
 
   const employeLinks = [
     { to: '/dashboard',    label: 'Tableau de bord', icon: '⊞' },
@@ -21,7 +24,6 @@ export default function Sidebar() {
     { to: '/employes',     label: 'Employés',     icon: '👔' },
   ];
 
-  // ✅ Client — seulement espace client, PAS de page mes-rdv
   const clientLinks = [
     { to: '/espace-client', label: 'Mon Espace', icon: '🏠' },
   ];
