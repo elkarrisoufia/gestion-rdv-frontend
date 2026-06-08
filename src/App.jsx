@@ -43,7 +43,6 @@ function LoginRoute() {
   }
   return <Login />;
 }
-
 export default function App() {
   return (
     <Routes>
@@ -63,7 +62,7 @@ export default function App() {
       <Route path="/employes"      element={<PrivateRoute allowedRoles={['manager']}><AppLayout><Employes /></AppLayout></PrivateRoute>} />
       <Route path="/espace-client" element={<PrivateRoute allowedRoles={['client']}><AppLayout><ClientSpace /></AppLayout></PrivateRoute>} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

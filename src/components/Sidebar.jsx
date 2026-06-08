@@ -8,8 +8,10 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login', { replace: true });
-  };
+    setTimeout(() => {
+        navigate('/login', { replace: true });
+    }, 50);
+};
 
   const employeLinks = [
     { to: '/dashboard',    label: 'Tableau de bord', icon: '⊞' },

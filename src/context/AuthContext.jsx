@@ -43,15 +43,13 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = async () => {
+const logout = async () => {
     try { await authAPI.logout(); } catch {}
     localStorage.clear();
     sessionStorage.clear();
     setUser(null);
     setError('');
-    // ✅ Pas de window.location — Login.jsx et App.jsx gèrent la navigation
-  };
-
+};
   const isManager = user?.role === 'manager';
   const isEmploye = user?.role === 'employe' || user?.role === 'manager';
   const isClient  = user?.role === 'client';
