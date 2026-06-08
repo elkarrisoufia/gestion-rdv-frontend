@@ -8,22 +8,21 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
   const [init, setInit]       = useState(true);
-useEffect(() => {
+
+  useEffect(() => {
     const token = localStorage.getItem('bp_token');
     if (!token) {
       setInit(false);
       return;
     }
     authAPI.me()
-      .then(res => {
-        setUser(res.data);
-      })
+      .then(res => { setUser(res.data); })
       .catch(() => {
         localStorage.clear();
         setUser(null);
       })
       .finally(() => setInit(false));
-}, []);
+  }, []);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -35,7 +34,6 @@ useEffect(() => {
       localStorage.setItem('bp_user', JSON.stringify(userData));
       setUser(userData);
       setLoading(false);
-      // Redirection selon le rôle
       setTimeout(() => {
         window.location.replace(
           userData.role === 'client' ? '/espace-client' : '/dashboard'
@@ -56,10 +54,10 @@ useEffect(() => {
     sessionStorage.clear();
     setUser(null);
     setError('');
-    window.location.href = '/login';
-};
-    
-};
+    setTimeout(() => {
+      window.location.replace('/login');
+    }, 200);
+  };
 
   const isManager = user?.role === 'manager';
   const isEmploye = user?.role === 'employe' || user?.role === 'manager';
