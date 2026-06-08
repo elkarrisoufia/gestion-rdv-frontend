@@ -48,18 +48,17 @@ export function AuthProvider({ children }) {
       return false;
     }
   };
-
-  const logout = async () => {
-    setLoggingOut(true); // ✅ Marque qu'on est en train de se déconnecter
+  
+const logout = async () => {
+    setLoggingOut(true);
     try { await authAPI.logout(); } catch {}
     localStorage.clear();
     sessionStorage.clear();
     setUser(null);
     setError('');
     setLoggingOut(false);
-    window.location.replace('/login'); // ✅ Redirection immédiate sans setTimeout
-  };
-
+    // ✅ Pas de window.location — React Router gère la navigation
+};
   const isManager = user?.role === 'manager';
   const isEmploye = user?.role === 'employe' || user?.role === 'manager';
   const isClient  = user?.role === 'client';
