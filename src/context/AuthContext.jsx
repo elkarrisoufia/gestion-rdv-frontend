@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
   const [init, setInit]       = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false); // ✅ Nouveau état
 
   useEffect(() => {
     const token = localStorage.getItem('bp_token');
@@ -49,14 +50,14 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    setLoggingOut(true); // ✅ Marque qu'on est en train de se déconnecter
     try { await authAPI.logout(); } catch {}
     localStorage.clear();
     sessionStorage.clear();
     setUser(null);
     setError('');
-    setTimeout(() => {
-      window.location.replace('/login');
-    }, 200);
+    setLoggingOut(false);
+    window.location.replace('/login'); // ✅ Redirection immédiate sans setTimeout
   };
 
   const isManager = user?.role === 'manager';
@@ -73,7 +74,7 @@ export function AuthProvider({ children }) {
   );
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, error, setError, isManager, isEmploye, isClient }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, error, setError, isManager, isEmploye, isClient, loggingOut }}>
       {children}
     </AuthContext.Provider>
   );

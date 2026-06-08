@@ -17,7 +17,9 @@ import './styles/global.css';
 import './App.css';
 
 function PrivateRoute({ children, allowedRoles }) {
-  const { user } = useAuth();
+  const { user, loggingOut } = useAuth();
+  // ✅ Si en train de se déconnecter → ne pas rediriger
+  if (loggingOut) return null;
   if (!user) return <Navigate to="/login" replace />;
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return user.role === 'client'
@@ -36,9 +38,10 @@ function AppLayout({ children }) {
   );
 }
 
-// ✅ Composant séparé pour la route login
 function LoginRoute() {
-  const { user } = useAuth();
+  const { user, loggingOut } = useAuth();
+  // ✅ Si en train de se déconnecter → afficher login directement
+  if (loggingOut) return <Login />;
   if (user) {
     return <Navigate to={user.role === 'client' ? '/espace-client' : '/dashboard'} replace />;
   }
@@ -55,13 +58,13 @@ export default function App() {
       <Route path="/horaires" element={<PublicPages page="horaires" />} />
       <Route path="/contact" element={<PublicPages page="contact" />} />
 
-      <Route path="/dashboard"    element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Dashboard /></AppLayout></PrivateRoute>} />
-      <Route path="/rendez-vous"  element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Appointments /></AppLayout></PrivateRoute>} />
-      <Route path="/clients"      element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Clients /></AppLayout></PrivateRoute>} />
-      <Route path="/emails"       element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Emails /></AppLayout></PrivateRoute>} />
-      <Route path="/chatbot"      element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Chatbot /></AppLayout></PrivateRoute>} />
-      <Route path="/statistiques" element={<PrivateRoute allowedRoles={['manager']}><AppLayout><Stats /></AppLayout></PrivateRoute>} />
-      <Route path="/employes"     element={<PrivateRoute allowedRoles={['manager']}><AppLayout><Employes /></AppLayout></PrivateRoute>} />
+      <Route path="/dashboard"     element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Dashboard /></AppLayout></PrivateRoute>} />
+      <Route path="/rendez-vous"   element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Appointments /></AppLayout></PrivateRoute>} />
+      <Route path="/clients"       element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Clients /></AppLayout></PrivateRoute>} />
+      <Route path="/emails"        element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Emails /></AppLayout></PrivateRoute>} />
+      <Route path="/chatbot"       element={<PrivateRoute allowedRoles={['employe','manager']}><AppLayout><Chatbot /></AppLayout></PrivateRoute>} />
+      <Route path="/statistiques"  element={<PrivateRoute allowedRoles={['manager']}><AppLayout><Stats /></AppLayout></PrivateRoute>} />
+      <Route path="/employes"      element={<PrivateRoute allowedRoles={['manager']}><AppLayout><Employes /></AppLayout></PrivateRoute>} />
       <Route path="/espace-client" element={<PrivateRoute allowedRoles={['client']}><AppLayout><ClientSpace /></AppLayout></PrivateRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
