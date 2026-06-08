@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   const [init, setInit]       = useState(true);
   const [loggingOut, setLoggingOut] = useState(false); // ✅ Nouveau état
 
-  useEffect(() => {
+useEffect(() => {
     const token = localStorage.getItem('bp_token');
     if (!token) {
       setInit(false);
@@ -23,8 +23,7 @@ export function AuthProvider({ children }) {
         setUser(null);
       })
       .finally(() => setInit(false));
-  }, []);
-
+}, []);
   const login = async (email, password) => {
     setLoading(true);
     setError('');
@@ -48,7 +47,7 @@ export function AuthProvider({ children }) {
       return false;
     }
   };
-  
+
 const logout = async () => {
     setLoggingOut(true);
     try { await authAPI.logout(); } catch {}
@@ -57,7 +56,7 @@ const logout = async () => {
     setUser(null);
     setError('');
     setLoggingOut(false);
-    // ✅ Pas de window.location — React Router gère la navigation
+    setInit(false); // ✅ Ne pas relancer le chargement
 };
   const isManager = user?.role === 'manager';
   const isEmploye = user?.role === 'employe' || user?.role === 'manager';
