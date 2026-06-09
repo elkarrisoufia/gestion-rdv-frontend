@@ -171,7 +171,7 @@ export default function Chatbot() {
                           transition: 'all 0.2s',
                         }}
                       >
-                        {copiedId === msg.id ? '✅ Copié !' : '📋 Copier'}
+                        {copiedId === msg.id ? '✔' : '⎘'}
                       </button>
                     )}
                   </div>
